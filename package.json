@@ -1,0 +1,35 @@
+{
+  "type": "commonjs",
+  "name": "practice",
+  "version": "1.0.0",
+  "description": "for testing",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "bharatkathore",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
+    "module-alias": "^2.2.3",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.12.0",
+    "nodemailer": "^6.9.16"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@db": "src/db",
+    "@controller": "src/controller",
+    "@route": "src/route"
+  }
+}
