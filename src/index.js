@@ -3,8 +3,10 @@ const {static, urlencoded} = require('express');
 const mainRoute = require('./route/index');
 require('module-alias/register');
 
+//for access .env file
 require('dotenv').config()
 
+//create app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -23,4 +25,6 @@ app.use('/storage', static('storage'))
 app.use('/', static('public'))
 // for folder Access
 
+
+//serve app
 app.listen(PORT, () => console.log(`Server is running on port http://localhost:${PORT}`));
