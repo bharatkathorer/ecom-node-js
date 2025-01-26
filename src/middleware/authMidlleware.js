@@ -64,6 +64,27 @@ const authAdmin = async (req, res, next) => {
     }
 }
 
+const socketAuth = async (socket, next) => {
+    const token = socket.handshake.auth?.token; // Token sent by the client in handshake.auth
+    if (!token) {
+        return next(new Error('Authentication error: Token not provided'));
+    }
+    const tokenData = readTokenData(token);
+    if (tokenData?.id) {
+        let {login_tokens, ...user} = await findUser('users', 'id', tokenData.id);
+        const isValidToken = login_tokens?.find((item) => item === token) ?? null;
+        if (isValidToken) {
+            socket.login_tokens = login_tokens;
+            socket.login_token = token;
+            socket.auth = user;
+            return next();
+        } else {
+            return next(new Error('Authentication error: Invalid token'));
+        }
+    } else {
+        return next(new Error('Authentication error: Invalid token'));
+    }
+}
 module.exports = {
-    auth, authAdmin
+    auth, authAdmin, socketAuth
 }

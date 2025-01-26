@@ -8,6 +8,8 @@ const orderController = require('../../../controller/api/frontend/orderControlle
 const addressController = require('../../../controller/api/frontend/addressController')
 const {addCartRequest, checkOutRequest} = require("../../../validation/cartRequests");
 const {addressRequest} = require("../../../validation/addressRequest");
+
+
 // authentications routes
 route.get('/user', auth, authController.index)
 route.post('/user/register', userRegisterRequest, authController.register)
