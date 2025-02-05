@@ -37,11 +37,18 @@ const orderController = {
                 WHERE carts.id IN (?)
                   AND carts.user_id = ?;
             `;
-            let [result] = await db.query(cartsQuery, [req.validate.cart_ids, req.auth.id])
-            const address = JSON.stringify([]);
+
+            let [result] = await db.query(`select *
+                                           from user_addresses
+                                           where id = ?`, [req.validate.address_id])
+            const address = JSON.stringify(result[0]);
+            [result] = await db.query(cartsQuery, [req.validate.cart_ids, req.auth.id])
+
             if (!result.length) {
                 return res.error('your cart is empty');
             }
+
+
             const orders = result.map((item) => {
                 return {
                     product_id: item.id,
@@ -50,16 +57,16 @@ const orderController = {
                     grass_price: item.grass_price,
                     net_price: item.net_price,
                     discount: item.discount,
-                    address,
+                    address
                 }
             })
             await db.query('delete from carts where id IN (?)', [
                 result.map((item) => item.cart_id)
             ])
             let {query, values} = makeMultipleInsertQuery(orders);
-            query = `INSERT INTO orders ${query}`
 
-            [result] = await db.query(query, [values]);
+            [result] = await db.query(`INSERT INTO orders ${query}`, [values]);
+
             if (result.affectedRows) {
                 // db.commit();
                 return res.success('Order successfully');
@@ -70,6 +77,7 @@ const orderController = {
 
         } catch (e) {
             // await db.rollback();
+            console.log(e);
             return res.error(e.message);
         }
     },

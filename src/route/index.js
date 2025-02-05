@@ -3,6 +3,7 @@ const backendRoutes = require('./api/backend/index');
 const frontendRoutes = require('./api/frontend/index');
 const adminRoutes = require('./admin/index');
 const responseMiddleware = require('./../middleware/responseMiddleware');
+const {setAuth} = require("../middleware/authMidlleware");
 
 
 router.get('/', (req, res) => {
@@ -10,7 +11,7 @@ router.get('/', (req, res) => {
 })
 router.use(responseMiddleware);
 router.use('/admin', adminRoutes);
-router.use('/api/', frontendRoutes);
+router.use('/api/', setAuth, frontendRoutes);
 router.use('/api/backend', backendRoutes);
 
 module.exports = router;

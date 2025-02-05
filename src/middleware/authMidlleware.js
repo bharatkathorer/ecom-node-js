@@ -4,7 +4,7 @@ const findUser = async (tableName, keyName, value) => {
     const [result] = await db.query(`
         SELECT ${tableName}.*, COUNT(carts.id) AS cart_items
         FROM ${tableName}
-                 LEFT JOIN carts ON users.id = carts.user_id
+                 LEFT JOIN carts ON ${tableName}.id = carts.user_id
         WHERE ${tableName}.${keyName} = ?
         GROUP BY ${tableName}.id
     `, [value]);
@@ -14,8 +14,28 @@ const findUser = async (tableName, keyName, value) => {
     return false;
 }
 
+const setAuth = async (req, res, next) => {
+    let head_token = req.headers?.authorization;
+    head_token = head_token?.replace('Bearer ', '');
+    if (head_token) {
+        const tokenData = readTokenData(head_token);
+        if (tokenData?.id) {
+            let {login_tokens, ...user} = await findUser('users', 'id', tokenData.id);
+            const isValidToken = login_tokens?.find((item) => item === head_token) ?? null;
+            if (isValidToken) {
+                req.login_tokens = login_tokens;
+                req.login_token = head_token;
+                req.auth = user;
+            }
+        }
+    }
+    return next();
+}
 const auth = async (req, res, next) => {
     try {
+        if (req.login_token) {
+            return next();
+        }
         let head_token = req.headers?.authorization;
         head_token = head_token?.replace('Bearer ', '');
         if (head_token) {
@@ -85,6 +105,8 @@ const socketAuth = async (socket, next) => {
         return next(new Error('Authentication error: Invalid token'));
     }
 }
+
+
 module.exports = {
-    auth, authAdmin, socketAuth
+    auth, authAdmin, socketAuth, setAuth
 }

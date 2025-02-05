@@ -14,6 +14,8 @@ const {addressRequest} = require("../../../validation/addressRequest");
 route.get('/user', auth, authController.index)
 route.post('/user/register', userRegisterRequest, authController.register)
 route.post('/user/login', userLoginRequest, authController.login)
+route.post('/user/google-auth', authController.googleAuth)
+
 route.post('/user/logout', auth, authController.logout)
 
 

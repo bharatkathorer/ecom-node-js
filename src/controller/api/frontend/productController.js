@@ -3,15 +3,28 @@ const {makePaginateQuery} = require("../../../utils/common");
 const productController = {
 
     index: async (req, res) => {
+
+
         try {
             req.makePaginate();
             const getQuery = makePaginateQuery(`
-                SELECT *,
+                SELECT products.id,
+                       products.title,
+                       products.slug,
+                       products.product_image,
+                       products.description,
+                       products.grass_price,
+                       products.net_price,
+                       products.discount,
+                       carts.id as cart_id,
                        COUNT(*) OVER () AS total_rows
-                FROM products
+                FROM products LEFT JOIN carts ON products.id = carts.product_id 
+                AND carts.user_id = ?
+                    
             `);
             // Pass parameters to the query
-            const [result] = await db.query(getQuery, [req.limit, req.offset]);
+            const [result] = await db.query(getQuery, [req?.auth?.id,req.limit, req.offset]);
+
 
             // Return response
             return res.success({

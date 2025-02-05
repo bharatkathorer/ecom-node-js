@@ -42,7 +42,11 @@ const authenticationController = {
 
     login: async (req, res) => {
         try {
-            const sql = "select * from users where email=?";
+            const sql = `SELECT users.*, COUNT(carts.id) AS cart_items
+                         FROM users
+                                  LEFT JOIN carts ON users.id = carts.user_id
+                         WHERE users.email = ?
+                         GROUP BY users.id`;
             const [result] = await db.query(sql, [req.validate.email]);
             let errorMessage = 'something going wrong';
             if (result.length) {
@@ -105,6 +109,14 @@ const authenticationController = {
         const sql = 'UPDATE `users` SET `login_tokens` = ? WHERE `id` =? LIMIT 1';
         const [result] = await db.query(sql, [tokens, user_id]);
         return result;
+    },
+
+    googleAuth: async (req, res) => {
+        try {
+
+        } catch (e) {
+
+        }
     }
 }
 
