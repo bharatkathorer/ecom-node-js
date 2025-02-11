@@ -8,7 +8,7 @@ exports.up = function (knex) {
         table.string('title');
         table.string('slug').nullable();
         table.string('product_image').nullable();
-        table.string('description').nullable();
+        table.text('description').nullable();
         table.double('grass_price');
         table.double('net_price');
         table.integer('discount').defaultTo(0);

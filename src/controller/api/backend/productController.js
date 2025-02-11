@@ -5,13 +5,17 @@ const productController = {
     index: async (req, res) => {
         try {
             req.makePaginate();
-            const getQuery = makePaginateQuery(`
-                SELECT *,
-                       COUNT(*) OVER () AS total_rows
-                FROM products
-                where admin_id = ?
-            `);
+            const getQuery = `WITH paginate_data AS (SELECT *,
+                                                            COUNT(*) OVER () AS total_rows
+                                                     FROM products
+                                                     WHERE admin_id = ?)
+                              SELECT *
+                              FROM paginate_data
+                              ORDER BY created_at DESC -- ✅ Ensure sorting is applied in the final result
+                                  LIMIT ?
+                              OFFSET ?`;
 
+            console.log(getQuery);
             // Pass parameters to the query
             const [result] = await db.query(getQuery, [req.auth.id, req.limit, req.offset]);
 

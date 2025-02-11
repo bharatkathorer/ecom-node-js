@@ -2,6 +2,7 @@ const route = require('express').Router();
 const authController = require('../../../controller/api/backend/authenticationController');
 const productController = require('../../../controller/api/backend/productController');
 const orderController = require('../../../controller/api/backend/orderController');
+const userController = require('../../../controller/api/backend/userController');
 const {userRegisterRequest, userLoginRequest} = require("../../../validation/userAuthenticationRequests");
 const {authAdmin} = require("../../../middleware/authMidlleware");
 const {productStoreRequest} = require("../../../validation/productRequests");
@@ -27,5 +28,8 @@ route.delete('/products/:product_id', [authAdmin], productController.destroy);
 route.get('/orders', [authAdmin], orderController.index);
 route.get('/orders/:order_id', [authAdmin], orderController.view);
 route.post('/orders', [authAdmin, adminOrderUpdateRequest], orderController.update);
+
+route.get('/users', userController.index);
+
 
 module.exports = route;

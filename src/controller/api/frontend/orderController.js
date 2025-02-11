@@ -16,7 +16,7 @@ const orderController = {
                                   orders.updated_at  AS order_updated_at
                            from orders
                                     RIGHT JOIN products ON orders.product_id = products.id
-                           where user_id = ?`
+                           where user_id = ? ORDER BY orders.created_at DESC `
             const [result] = await db.query(query, [req.auth.id]);
             return res.success({
                 orders: result
@@ -26,6 +26,75 @@ const orderController = {
         }
     },
 
+
+    view: async (req, res) => {
+        try {
+            const query =`select orders.id          AS order_id,
+                                 orders.payment_id,
+                                 orders.address,
+                                 orders.status,
+                                 orders.grass_price AS order_grass_price,
+                                 orders.net_price   AS order_net_price,
+                                 orders.discount    AS order_discount,
+                                 orders.created_at  AS order_created_at,
+                                 orders.updated_at  AS order_updated_at,
+                                 products.*,
+                                 users.name         AS user_name,
+                                 users.email        AS user_email,
+                                 COALESCE((SELECT JSON_ARRAYAGG(
+                                                          JSON_OBJECT(
+                                                                  'id', t.id,
+                                                                  'note', t.note,
+                                                                  'status', t.status,
+                                                                  'created_at', t.created_at
+                                                          )
+                                                  )
+                                           FROM order_transations t
+                                           WHERE t.order_id = orders.id
+                                           ORDER BY t.created_at DESC -- Sorting transactions before aggregation
+                                          ), '[]')  AS order_transactions
+                          from orders
+                                   Right Join products on orders.product_id = products.id
+                                   Right Join users on orders.user_id = users.id
+                          where orders.id = ? limit 1 `
+            // const query = `select products.*,
+            //                       orders.id          AS order_id,
+            //                       orders.payment_id,
+            //                       orders.address,
+            //                       orders.status,
+            //                       orders.grass_price AS order_grass_price,
+            //                       orders.net_price   AS order_net_price,
+            //                       orders.discount    AS order_discount,
+            //                       orders.created_at  AS order_created_at,
+            //                       orders.updated_at  AS order_updated_at,
+            //                       users.name         AS user_name,
+            //                       users.email        AS user_email,
+            //                       COALESCE((SELECT JSON_ARRAYAGG(
+            //                                                JSON_OBJECT(
+            //                                                        'id', t.id,
+            //                                                        'note', t.note,
+            //                                                        'status', t.status,
+            //                                                        'created_at', t.created_at
+            //                                                )
+            //                                        )
+            //                                 FROM order_transations t
+            //                                 WHERE t.order_id = orders.id
+            //                                 ORDER BY t.created_at DESC -- Sorting transactions before aggregation
+            //                                ), '[]')  AS order_transactions
+            //                from products
+            //                         RIGHT JOIN orders ON products.id = orders.product_id
+            //                         LEFT JOIN users ON orders.user_id = users.id
+            //                  AND orders.id = ? limit 1`
+            const [result] = await db.query(query, [req.params.order_id]);
+
+            if (result.length) {
+                return res.success(result[0]);
+            }
+            return res.error('invalid order id');
+        } catch (e) {
+            return res.error(e.message);
+        }
+    },
 
     checkout: async (req, res) => {
         try {

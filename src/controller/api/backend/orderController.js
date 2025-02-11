@@ -67,21 +67,22 @@ const orderController = {
                                   orders.updated_at  AS order_updated_at,
                                   users.name         AS user_name,
                                   users.email        AS user_email,
-                                  -- Convert transactions to a JSON array
-                                  COALESCE(
-                                          JSON_ARRAYAGG(
-                                                  JSON_OBJECT(
-                                                          'id', th.id,
-                                                          'note', th.note,
-                                                          'status', th.status,
-                                                          'created_at', th.created_at
-                                                  )
-                                          ), '[]'
-                                  )                  AS order_transactions
+                                  COALESCE((
+        SELECT JSON_ARRAYAGG(
+                   JSON_OBJECT(
+                       'id', t.id,
+                       'note', t.note,
+                       'status', t.status,
+                       'created_at', t.created_at
+                   )
+               )
+        FROM order_transations t
+        WHERE t.order_id = orders.id
+        ORDER BY t.created_at DESC -- Sorting transactions before aggregation
+    ), '[]') AS order_transactions
                            from products
                                     RIGHT JOIN orders ON products.id = orders.product_id
                                     RIGHT JOIN users ON orders.user_id = users.id
-                                    LEFT JOIN order_transations th ON orders.id = th.order_id
                            WHERE admin_id = ?
                              AND orders.id = ?`
             const [result] = await db.query(query, [req.auth.id, req.params.order_id]);

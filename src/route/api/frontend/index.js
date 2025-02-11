@@ -29,6 +29,7 @@ route.post('/carts', [auth, addCartRequest], cartController.store);
 
 //orders
 route.get('/orders', [auth], orderController.index);
+route.get('/orders/:order_id', [auth], orderController.view);
 route.post('/orders/checkout', [auth, checkOutRequest], orderController.checkout);
 
 // addresses

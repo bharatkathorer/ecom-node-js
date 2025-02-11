@@ -38,10 +38,21 @@ const productController = {
 
     view: async (req, res) => {
         try {
-            const sqlQuery = `select *
-                              from products
-                              where id = ? limit 1`
-            const [result] = await db.query(sqlQuery, [req.params.product_id])
+            const sqlQuery = `SELECT products.id,
+                                     products.title,
+                                     products.slug,
+                                     products.product_image,
+                                     products.description,
+                                     products.grass_price,
+                                     products.net_price,
+                                     products.discount,
+                                     carts.id as cart_id,
+                                     COUNT(*)    OVER () AS total_rows
+                              FROM products
+                                       LEFT JOIN carts ON products.id = carts.product_id
+                                  AND carts.user_id = ?
+                              where products.id = ? limit 1`
+            const [result] = await db.query(sqlQuery, [req?.auth?.id,req.params.product_id])
             if (result.length) {
                 return res.success(result[0]);
             }
