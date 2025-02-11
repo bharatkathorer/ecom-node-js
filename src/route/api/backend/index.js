@@ -25,6 +25,7 @@ route.delete('/products/:product_id', [authAdmin], productController.destroy);
 
 //orders
 route.get('/orders', [authAdmin], orderController.index);
+route.get('/orders/:order_id', [authAdmin], orderController.view);
 route.post('/orders', [authAdmin, adminOrderUpdateRequest], orderController.update);
 
 module.exports = route;

@@ -1,10 +1,61 @@
 const db = require('../../../db/connection')
-const {makeUpdateQuery, makeInsertQuery} = require("../../../utils/common");
+const {makeUpdateQuery, makeInsertQuery, makePaginateQuery} = require("../../../utils/common");
 const orderController = {
 
     index: async (req, res) => {
         try {
-            const query = `SELECT products.*,
+
+            req.makePaginate();
+            const query = makePaginateQuery(`SELECT products.*,
+                                                    orders.id          AS order_id,
+                                                    orders.payment_id,
+                                                    orders.address,
+                                                    orders.status,
+                                                    orders.grass_price AS order_grass_price,
+                                                    orders.net_price   AS order_net_price,
+                                                    orders.discount    AS order_discount,
+                                                    orders.created_at  AS order_created_at,
+                                                    orders.updated_at  AS order_updated_at,
+                                                    users.name         AS user_name,
+                                                    users.email        AS user_email,
+                                                    COUNT(*)              OVER () AS total_rows
+                                             from products
+                                                      RIGHT JOIN orders ON products.id = orders.product_id
+                                                      RIGHT JOIN users ON orders.user_id = users.id
+                                             WHERE admin_id = ?
+                                             ORDER BY orders.created_at DESC
+            `);
+            // const query = `SELECT products.*,
+            //                       orders.id          AS order_id,
+            //                       orders.payment_id,
+            //                       orders.address,
+            //                       orders.status,
+            //                       orders.grass_price AS order_grass_price,
+            //                       orders.net_price   AS order_net_price,
+            //                       orders.discount    AS order_discount,
+            //                       orders.created_at  AS order_created_at,
+            //                       orders.updated_at  AS order_updated_at,
+            //                       users.name         AS user_name,
+            //                       users.email        AS user_email
+            //                from products
+            //                         RIGHT JOIN orders ON products.id = orders.product_id
+            //                         RIGHT JOIN users ON orders.user_id = users.id
+            //                WHERE admin_id = ?
+            //                ORDER BY orders.created_at DESC`
+
+            const [result] = await db.query(query, [req.auth.id, req.limit, req.offset]);
+            return res.success({
+                orders: result,
+                paginate: req.paginate(result, 'total_rows'),
+            });
+        } catch (e) {
+            return res.error(e.message);
+        }
+    },
+
+    view: async (req, res) => {
+        try {
+            const query = `select products.*,
                                   orders.id          AS order_id,
                                   orders.payment_id,
                                   orders.address,
@@ -15,41 +66,30 @@ const orderController = {
                                   orders.created_at  AS order_created_at,
                                   orders.updated_at  AS order_updated_at,
                                   users.name         AS user_name,
-                                  users.email        AS user_email
+                                  users.email        AS user_email,
+                                  -- Convert transactions to a JSON array
+                                  COALESCE(
+                                          JSON_ARRAYAGG(
+                                                  JSON_OBJECT(
+                                                          'id', th.id,
+                                                          'note', th.note,
+                                                          'status', th.status,
+                                                          'created_at', th.created_at
+                                                  )
+                                          ), '[]'
+                                  )                  AS order_transactions
                            from products
                                     RIGHT JOIN orders ON products.id = orders.product_id
                                     RIGHT JOIN users ON orders.user_id = users.id
+                                    LEFT JOIN order_transations th ON orders.id = th.order_id
                            WHERE admin_id = ?
-                           ORDER BY orders.created_at DESC`
+                             AND orders.id = ?`
+            const [result] = await db.query(query, [req.auth.id, req.params.order_id]);
 
-            const [result] = await db.query(query, [req.auth.id]);
-            return res.success({
-                orders: result
-            });
-        } catch (e) {
-            return res.error(e.message);
-        }
-    },
-
-    create: async (req, res) => {
-        try {
-            return res.success('');
-        } catch (e) {
-            return res.error(e.message);
-        }
-    },
-
-    store: async (req, res) => {
-        try {
-            return res.success('');
-        } catch (e) {
-            return res.error(e.message);
-        }
-    },
-
-    edit: async (req, res) => {
-        try {
-            return res.success('');
+            if (result.length) {
+                return res.success(result[0]);
+            }
+            return res.error('invalid order id');
         } catch (e) {
             return res.error(e.message);
         }
@@ -96,3 +136,4 @@ const orderController = {
 }
 
 module.exports = orderController;
+

@@ -7,7 +7,7 @@ const productController = {
             req.makePaginate();
             const getQuery = makePaginateQuery(`
                 SELECT *,
-                       COUNT(*)    OVER () AS total_rows
+                       COUNT(*) OVER () AS total_rows
                 FROM products
                 where admin_id = ?
             `);
