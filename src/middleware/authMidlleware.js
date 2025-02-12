@@ -21,9 +21,10 @@ const setAuth = async (req, res, next) => {
         const tokenData = readTokenData(head_token);
         if (tokenData?.id) {
             let {login_tokens, ...user} = await findUser('users', 'id', tokenData.id);
-            const isValidToken = login_tokens?.find((item) => item === head_token) ?? null;
+            let tokens = login_tokens ? JSON.parse(login_tokens) : [];
+            const isValidToken = tokens?.find((item) => item === head_token) ?? null;
             if (isValidToken) {
-                req.login_tokens = login_tokens;
+                req.login_tokens = tokens;
                 req.login_token = head_token;
                 req.auth = user;
             }
@@ -42,9 +43,10 @@ const auth = async (req, res, next) => {
             const tokenData = readTokenData(head_token);
             if (tokenData?.id) {
                 let {login_tokens, ...user} = await findUser('users', 'id', tokenData.id);
-                const isValidToken = login_tokens?.find((item) => item === head_token) ?? null;
+                let tokens = login_tokens ? JSON.parse(login_tokens) : [];
+                const isValidToken = tokens?.find((item) => item === head_token) ?? null;
                 if (isValidToken) {
-                    req.login_tokens = login_tokens;
+                    req.login_tokens = tokens;
                     req.login_token = head_token;
                     req.auth = user;
                     return next();
@@ -67,10 +69,10 @@ const authAdmin = async (req, res, next) => {
             const tokenData = readTokenData(head_token);
             if (tokenData?.id) {
                 let {login_tokens, ...user} = await findUser('admins', 'id', tokenData.id);
-                console.log(login_tokens);
-                const isValidToken = login_tokens?.find((item) => item === head_token) ?? null;
+                let tokens = login_tokens ? JSON.parse(login_tokens) : [];
+                const isValidToken = tokens?.find((item) => item === head_token) ?? null;
                 if (isValidToken) {
-                    req.login_tokens = login_tokens;
+                    req.login_tokens = tokens;
                     req.login_token = head_token;
                     req.auth = user;
                     return next();
@@ -93,10 +95,10 @@ const socketAuth = async (socket, next) => {
     const tokenData = readTokenData(token);
     if (tokenData?.id) {
         let {login_tokens, ...user} = await findUser('users', 'id', tokenData.id);
-
-        const isValidToken = (login_tokens??[])?.find((item) => item === token) ?? null;
+        let tokens = login_tokens ? JSON.parse(login_tokens) : [];
+        const isValidToken = (tokens ?? [])?.find((item) => item === token) ?? null;
         if (isValidToken) {
-            socket.login_tokens = login_tokens;
+            socket.login_tokens = tokens;
             socket.login_token = token;
             socket.auth = user;
             return next();
