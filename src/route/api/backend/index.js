@@ -29,7 +29,7 @@ route.get('/orders', [authAdmin], orderController.index);
 route.get('/orders/:order_id', [authAdmin], orderController.view);
 route.post('/orders', [authAdmin, adminOrderUpdateRequest], orderController.update);
 
-route.get('/users', userController.index);
+route.get('/users', [authAdmin], userController.index);
 
 
 module.exports = route;

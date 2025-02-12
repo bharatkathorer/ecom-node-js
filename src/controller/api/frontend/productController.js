@@ -25,7 +25,6 @@ const productController = {
             // Pass parameters to the query
             const [result] = await db.query(getQuery, [req?.auth?.id,req.limit, req.offset]);
 
-
             // Return response
             return res.success({
                 data: result,

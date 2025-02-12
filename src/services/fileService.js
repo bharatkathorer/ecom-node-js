@@ -37,7 +37,7 @@ const uploadFile = (fieldName, folderName = '', allowedTypes = ['image']) => {
         console.log(req);
         upload(req, res, (err) => {
             if (err) {
-                return res.status(500).send(err.message);
+                return res.status(500).send();
             }
             if (!req.file) {
                 req.file={

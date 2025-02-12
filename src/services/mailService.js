@@ -65,6 +65,20 @@ const mailService = {
             };
         }
     },
+    dealy: (seconds = 0) => {
+        Object.keys(valuesHtml)
+            .map(key => {
+                optionsData.html = optionsData.html.replaceAll(`{{ ${key} }}`, valuesHtml[key]);
+                optionsData.html = optionsData.html.replaceAll(`{{${key} }}`, valuesHtml[key]);
+                optionsData.html = optionsData.html.replaceAll(`{{ ${key}}}`, valuesHtml[key]);
+                optionsData.html = optionsData.html.replaceAll(`{{${key}}}`, valuesHtml[key]);
+            });
+        try {
+            setTimeout(() => transporter.sendMail(optionsData), seconds);
+        } catch (e) {
+            console.log(`mail sending error: ${e.message}`);
+        }
+    }
 };
 
 module.exports = {mailService};

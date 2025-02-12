@@ -8,8 +8,12 @@ const addCartRequest = [
 ];
 
 const checkOutRequest = [
-    body('cart_ids').notEmpty().isArray({min: 1}).escape(),
-    body('address_id').notEmpty().escape(),
+    body('cart_ids').notEmpty()
+        .withMessage("The cart field required.")
+        .isArray({min: 1}).escape(),
+    body('address_id').notEmpty()
+        .withMessage("The address field required.")
+        .escape(),
     // body('qty').isNumeric().escape(),
     validateHandler
 ];

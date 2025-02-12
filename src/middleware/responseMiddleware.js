@@ -9,13 +9,15 @@ const responseMiddleware = (req, res, next) => {
         req.offset = (parsedPage - 1) * parsedLimit;
     }
     req.paginate = (result, total_key) => {
-        const total = result.length > 0 ? result[0]?.[total_key] : 0;
+        const currentPageTotal = result.length
+        const total = currentPageTotal > 0 ? result[0]?.[total_key] : 0;
         const totalPages = Math.ceil(total / req.limit);
         return {
-            currentPage: parseInt(req.page??'1'),
+            currentPage: parseInt(req.page ?? '1'),
             limit: req.limit,
             total,
             totalPages,
+            currentPageTotal
         }
     }
 
@@ -33,7 +35,7 @@ const responseMiddleware = (req, res, next) => {
         if (req?.auth) {
             responseData.auth = req?.auth
         }
-        res.status(200).send(responseData);
+        res.status(200).send();
     };
 
     res.error = (errors = [], message = 'error') => {
@@ -50,7 +52,7 @@ const responseMiddleware = (req, res, next) => {
         if (req?.auth) {
             responseData.auth = req?.auth
         }
-        res.status(200).send(responseData);
+        res.status(200).send();
     };
 
 

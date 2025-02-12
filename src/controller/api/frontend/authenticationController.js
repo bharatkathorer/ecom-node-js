@@ -75,7 +75,7 @@ const authenticationController = {
                     errorMessage = "invalid password.";
                 }
             } else {
-                errorMessage = "User not fount";
+                errorMessage = "User not found";
             }
             return res.error(errorMessage);
 
@@ -91,8 +91,6 @@ const authenticationController = {
             await mailService
                 .to(req.auth.email)
                 .subject('Logout')
-                // .cc('arohi@gmail.com')
-                // .text("testing")
                 .html('src/views/emails/logout-mail.html', {
                     username: req.auth.name
                 })
