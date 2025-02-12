@@ -52,9 +52,6 @@ const authenticationController = {
                         id: data.id
                     });
                      let tokens = data.login_tokens ? JSON.parse(data.login_tokens) : [];
-                     console.log(tokens)
-                // tokens.push(data.token);
-                //     let tokens = data.login_tokens ?? [];
                     data.login_tokens = null;
                     tokens.push(data.token);
                     const updateResult = await authenticationController.updateTokens(tokens, data.id);
