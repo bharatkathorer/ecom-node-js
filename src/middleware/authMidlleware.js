@@ -67,6 +67,7 @@ const authAdmin = async (req, res, next) => {
             const tokenData = readTokenData(head_token);
             if (tokenData?.id) {
                 let {login_tokens, ...user} = await findUser('admins', 'id', tokenData.id);
+                console.log(login_tokens);
                 const isValidToken = login_tokens?.find((item) => item === head_token) ?? null;
                 if (isValidToken) {
                     req.login_tokens = login_tokens;
