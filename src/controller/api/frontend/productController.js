@@ -1,5 +1,6 @@
 const db = require('../../../db/connection')
 const {makePaginateQuery} = require("../../../utils/common");
+const {mailService} = require("../../../services/mailService");
 const productController = {
 
     index: async (req, res) => {
@@ -24,7 +25,6 @@ const productController = {
             `);
             // Pass parameters to the query
             const [result] = await db.query(getQuery, [req?.auth?.id,req.limit, req.offset]);
-
             // Return response
             return res.success({
                 data: result,
@@ -53,6 +53,7 @@ const productController = {
                                   AND carts.user_id = ?
                               where products.id = ? limit 1`
             const [result] = await db.query(sqlQuery, [req?.auth?.id,req.params.product_id])
+
             if (result.length) {
                 return res.success(result[0]);
             }

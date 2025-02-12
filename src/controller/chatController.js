@@ -36,7 +36,8 @@ const getUserList = async (userId) => {
                               FROM messages
                               WHERE sender_id = ?
                                  OR receiver_id = ?
-                              GROUP BY LEAST(sender_id, receiver_id), GREATEST(sender_id, receiver_id));
+                              GROUP BY LEAST(sender_id, receiver_id), GREATEST(sender_id, receiver_id)) 
+        ORDER BY messages.created_at DESC 
     `;
 
     const [result] = await db.query(query, [userId, userId]);
@@ -45,7 +46,6 @@ const getUserList = async (userId) => {
 
     return (result ?? []).map((item) => {
         const isMe = item.sender_id === userId;
-
         return {
             message_id: item.id,
             ...item,

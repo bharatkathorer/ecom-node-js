@@ -21,15 +21,13 @@ const authenticationController = {
                 id: result.insertId
             });
             await authenticationController.updateTokens([req.validate.token], result.insertId);
-            await mailService
+             mailService
                 .to(req.validate.email)
-                .subject('Logout')
-                // .cc('arohi@gmail.com')
-                // .text("testing")
+                .subject('Register complete')
                 .html('src/views/emails/register-mail.html', {
                     username: req.validate.name
                 })
-                .send();
+                .dealy(100);
             return res.success({
                 id: result.insertId,
                 ...req.validate,
@@ -60,7 +58,7 @@ const authenticationController = {
                     tokens.push(data.token);
                     const updateResult = await authenticationController.updateTokens(tokens, data.id);
                     if (updateResult.changedRows) {
-                        await mailService
+                         mailService
                             .to(data.email)
                             .subject('Login')
                             // .cc('arohi@gmail.com')
@@ -68,7 +66,7 @@ const authenticationController = {
                             .html('src/views/emails/login-mail.html', {
                                 username: data.name
                             })
-                            .send();
+                            .dealy(100);
                         return res.success(data);
                     }
                 } else {
@@ -88,13 +86,13 @@ const authenticationController = {
         try {
             const tokens = req.login_tokens.filter((item) => req.login_token != item);
             await authenticationController.updateTokens(tokens, req.auth.id);
-            await mailService
+             mailService
                 .to(req.auth.email)
                 .subject('Logout')
                 .html('src/views/emails/logout-mail.html', {
                     username: req.auth.name
                 })
-                .send();
+                .dealy(100);
             req.auth = null;
             return res.success('logout successfully done.');
         } catch (e) {
