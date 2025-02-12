@@ -92,7 +92,8 @@ const socketAuth = async (socket, next) => {
     const tokenData = readTokenData(token);
     if (tokenData?.id) {
         let {login_tokens, ...user} = await findUser('users', 'id', tokenData.id);
-        const isValidToken = login_tokens?.find((item) => item === token) ?? null;
+
+        const isValidToken = (login_tokens??[])?.find((item) => item === token) ?? null;
         if (isValidToken) {
             socket.login_tokens = login_tokens;
             socket.login_token = token;
