@@ -31,6 +31,7 @@ const productController = {
                 paginate: req.paginate(result, 'total_rows'),
             });
         } catch (e) {
+            console.log(e);
             return res.error(e.message);
         }
     },

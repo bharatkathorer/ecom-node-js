@@ -35,7 +35,7 @@ const responseMiddleware = (req, res, next) => {
         if (req?.auth) {
             responseData.auth = req?.auth
         }
-        res.status(200).send();
+        res.status(200).send(responseData);
     };
 
     res.error = (errors = [], message = 'error') => {
@@ -52,7 +52,7 @@ const responseMiddleware = (req, res, next) => {
         if (req?.auth) {
             responseData.auth = req?.auth
         }
-        res.status(200).send();
+        res.status(200).send(responseData);
     };
 
 
