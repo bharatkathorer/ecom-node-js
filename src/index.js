@@ -12,13 +12,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // app.use(cors());
-app.use(
-    cors({
-        origin: "*", // Allows ALL domains
-        methods: ["GET", "POST", "PUT", "DELETE"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-    })
-);
+app.use(cors({
+    origin: "*", // Allows all domains (change to specific domains in production)
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+}));
 
 //for api need file upload body get all type of data
 app.use(urlencoded({extended: true}));
@@ -37,11 +36,20 @@ app.use('/', static('public'))
 
 const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
-    cors: {
-        origin: "*", // Allow all domains (Change to specific domains in production)
+   cors: {
+        origin: "*", // Allow all domains (change in production)
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
+    },
+    handlePreflightRequest: (req, res) => {
+        res.writeHead(200, {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,POST",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Allow-Credentials": "true",
+        });
+        res.end();
     },
 });
 io.use(socketAuth)
