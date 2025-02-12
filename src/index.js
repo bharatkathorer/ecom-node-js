@@ -31,7 +31,7 @@ app.use('/', static('public'))
 const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
     cors: {
-        origins: ['http://localhost:3000']
+        origins: ['*']
     }
 });
 io.use(socketAuth)
