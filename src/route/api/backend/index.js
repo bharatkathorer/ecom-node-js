@@ -18,9 +18,9 @@ route.post('/logout', authAdmin, authController.logout)
 
 //products routes
 route.get('/products', [authAdmin], productController.index);
-route.post('/products', [uploadFile('product_image', 'storage/products'), authAdmin, productStoreRequest], productController.store);
+route.post('/products', [uploadFile('product_image', '/public/storage/products'), authAdmin, productStoreRequest], productController.store);
 route.get('/products/:product_id', [authAdmin], productController.edit);
-route.put('/products/:product_id', [uploadFile('product_image', 'storage/products'), authAdmin, productStoreRequest], productController.update);
+route.put('/products/:product_id', [uploadFile('product_image', '/public/storage/products'), authAdmin, productStoreRequest], productController.update);
 route.delete('/products/:product_id', [authAdmin], productController.destroy);
 
 

@@ -29,7 +29,7 @@ app.use(express.json());
 app.use('/', mainRoute);
 
 // for folder Access
-app.use('/storage', static('storage'))
+app.use('/storage', static('public/storage'))
 app.use('/', static('public'))
 // for folder Access
 
