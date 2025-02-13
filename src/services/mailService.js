@@ -5,7 +5,7 @@ const fs = require('fs');
 const transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST || 'localhost',
     port: process.env.MAIL_PORT || 1025,
-    secure: process.env.MAIL_SECURE || false, // Set to true if using SSL/TLS
+    secure: process.env.MAIL_SECURE === 'true', // Set to true if using SSL/TLS
     auth: {
         user: process.env.MAIL_USERNAME || null,
         pass: process.env.MAIL_PASSWORD || null,
