@@ -2,11 +2,11 @@
 require('dotenv').config()
 const express = require('express');
 const {static, urlencoded} = require('express');
-const mainRoute = require('./route/index');
+const mainRoute = require('./src/route');
 require('module-alias/register');
 const cors = require('cors');
-const chatController = require('./controller/chatController');
-const {socketAuth} = require("./middleware/authMidlleware");
+const chatController = require('./src/controller/chatController');
+const {socketAuth} = require("./src/middleware/authMidlleware");
 //create app
 const app = express();
 const PORT = process.env.PORT || 3000;
