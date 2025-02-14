@@ -6,7 +6,7 @@ function removePrefix(originalPath, prefix) {
     return path.normalize(originalPath.replace(prefix, ''));
 }
 
-const basePath = "/tmp"; 
+const basePath = "/tmp";
 const uploadFile = (fieldName, folderName = '', allowedTypes = ['image']) => {
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
