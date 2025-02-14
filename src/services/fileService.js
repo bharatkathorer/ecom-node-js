@@ -44,10 +44,10 @@ const uploadFile = (fieldName, folderName = '', allowedTypes = ['image']) => {
                 return next();
             }
 
-            let newPath = removePrefix(req.file.path, basePath).replace('\\public\\storage', '');
-            newPath = newPath.replace('\\tmp', 'tmp');
-            console.log(newPath);
-            req.file.path = newPath;
+            // let newPath = removePrefix(req.file.path, basePath).replace('\\public\\storage', '');
+            // newPath = newPath.replace('\\tmp', 'tmp');
+            // console.log(newPath);
+            req.file.path =  path.join('/tmp/products', req.file.filename);
             next();
         });
     };
