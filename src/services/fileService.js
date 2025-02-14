@@ -38,13 +38,14 @@ const uploadFile = (fieldName, folderName = '', allowedTypes = ['image']) => {
                 return res.status(500).send();
             }
             if (!req.file) {
-                req.file={
-                    path:null
+                req.file = {
+                    path: null
                 };
                 return next();
             }
 
-            req.file.path = removePrefix(req.file.path, basePath).replace('\\public\\storage','').replace('\\tmp','tmp');
+            const newPath = removePrefix(req.file.path, basePath).replace('\\public\\storage', '').replace('\\tmp', 'tmp');
+            req.file.path = newPath;
             console.log(req.file.path)
             next();
         });
