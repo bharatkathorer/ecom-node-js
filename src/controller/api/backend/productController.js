@@ -43,7 +43,7 @@ const productController = {
             let data = req.validate;
             data.admin_id = req.auth.id;
             data.slug = generateSlug(data.title);
-            data.product_image = req.file?.path?.replace(`public\\`, '');
+            data.product_image = req.file?.path;
             const {query, values} = makeInsertQuery(data);
             const insertQuery = `insert into products ${query}`
             const [result] = await db.execute(insertQuery, values);
@@ -87,7 +87,7 @@ const productController = {
             let data = req.validate;
             data.slug = generateSlug(data.title);
             if (req.file.path) {
-                data.product_image = req.file?.path?.replace(`public\\`, '');
+                data.product_image = req.file?.path;
             }
             const {query, values} = makeUpdateQuery(data);
 

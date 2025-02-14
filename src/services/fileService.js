@@ -11,7 +11,6 @@ const uploadFile = (fieldName, folderName = '', allowedTypes = ['image']) => {
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
             const folderPath = path.join(basePath, folderName);
-            console.log(folderPath);
             // Ensure the folder exists
             fs.mkdirSync(folderPath, {recursive: true});
             cb(null, folderPath);
@@ -44,7 +43,9 @@ const uploadFile = (fieldName, folderName = '', allowedTypes = ['image']) => {
                 };
                 return next();
             }
-            req.file.path = removePrefix(req.file.path, basePath);
+
+            req.file.path = removePrefix(req.file.path, basePath).replace('\\public\\storage','').replace('\\tmp','tmp');
+            console.log(req.file.path)
             next();
         });
     };
