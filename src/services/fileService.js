@@ -6,11 +6,12 @@ function removePrefix(originalPath, prefix) {
     return path.normalize(originalPath.replace(prefix, ''));
 }
 
-const basePath = "/tmp";
+const basePath = "./";
 const uploadFile = (fieldName, folderName = '', allowedTypes = ['image']) => {
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
             const folderPath = path.join(basePath, folderName);
+
             // Ensure the folder exists
             fs.mkdirSync(folderPath, {recursive: true});
             cb(null, folderPath);
@@ -38,16 +39,12 @@ const uploadFile = (fieldName, folderName = '', allowedTypes = ['image']) => {
                 return res.status(500).send();
             }
             if (!req.file) {
-                req.file = {
-                    path: null
+                req.file={
+                    path:null
                 };
                 return next();
             }
-
-            // let newPath = removePrefix(req.file.path, basePath).replace('\\public\\storage', '');
-            // newPath = newPath.replace('\\tmp', 'tmp');
-            // console.log(newPath);
-            req.file.path =  path.join('tmp/products', req.file.filename);
+            req.file.path = removePrefix(req.file.path, basePath);
             next();
         });
     };
