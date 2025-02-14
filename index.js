@@ -31,7 +31,7 @@ app.use('/', mainRoute);
 // for folder Access
 app.use('/public/storage', static('public/storage'))
 app.use('/storage', static('public/storage'))
-app.use('/tmp', static('tmp'))
+app.use('/tmp', static('/tmp/public/storage'))
 app.use('/', static('public'))
 // for folder Access
 
