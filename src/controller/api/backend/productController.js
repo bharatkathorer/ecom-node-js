@@ -1,5 +1,6 @@
 const {generateSlug, makeInsertQuery, makeUpdateQuery, makePaginateQuery} = require("../../../utils/common");
 const db = require('../../../db/connection');
+const {mailService} = require("../../../services/mailService");
 const productController = {
 
     index: async (req, res) => {
@@ -15,7 +16,6 @@ const productController = {
                                   LIMIT ?
                               OFFSET ?`;
 
-            console.log(getQuery);
             // Pass parameters to the query
             const [result] = await db.query(getQuery, [req.auth.id, req.limit, req.offset]);
 
@@ -25,6 +25,7 @@ const productController = {
                 paginate: req.paginate(result, 'total_rows'),
             });
         } catch (e) {
+            console.log(e.message)
             return res.error(e.message);
         }
     },

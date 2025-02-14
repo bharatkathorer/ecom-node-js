@@ -10,7 +10,7 @@ const basePath = "./";
 const uploadFile = (fieldName, folderName = '', allowedTypes = ['image']) => {
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
-            const folderPath = path.join(basePath, folderName);
+            const folderPath = path.join(`${__dirname}/../../`, folderName);
             // Ensure the folder exists
             fs.mkdirSync(folderPath, {recursive: true});
             cb(null, folderPath);
@@ -25,7 +25,6 @@ const uploadFile = (fieldName, folderName = '', allowedTypes = ['image']) => {
         if (!file.originalname || file.size === 0) {
             return cb(new Error("File is empty or missing"));
         }
-        console.log(file.mimetype.split('/')?.[0])
         if (allowedTypes.length && !allowedTypes.includes(file.mimetype.split('/')?.[0])) {
             return cb(new Error("Invalid file type"));
         }
@@ -34,7 +33,6 @@ const uploadFile = (fieldName, folderName = '', allowedTypes = ['image']) => {
     const upload = multer({storage, fileFilter}).single(fieldName);
 
     return (req, res, next) => {
-        console.log(req);
         upload(req, res, (err) => {
             if (err) {
                 return res.status(500).send();
