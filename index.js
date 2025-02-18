@@ -12,10 +12,9 @@ const {socketAuth} = require("./src/middleware/authMidlleware");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const allowedOrigins = ['https://ecom-react-seven-psi.vercel.app', 'http://localhost:5173'];
 // app.use(cors());
 app.use(cors({
-    origin: allowedOrigins, // Allows all domains (change to specific domains in production)
+    origin: "*", // Allows all domains (change to specific domains in production)
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -40,13 +39,21 @@ app.use('/', static('public'))
 
 const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
-    cors: {
-        origin: allowedOrigins,
+   cors: {
+        origin: "*", // Allow all domains (change in production)
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
     },
-    path: '/socket.io'
+    handlePreflightRequest: (req, res) => {
+        res.writeHead(200, {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,POST",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Allow-Credentials": "true",
+        });
+        res.end();
+    },
 });
 io.use(socketAuth)
 chatController.initSocket(io);
