@@ -7,6 +7,7 @@ require('module-alias/register');
 const cors = require('cors');
 const chatController = require('./src/controller/chatController');
 const {socketAuth} = require("./src/middleware/authMidlleware");
+
 //create app
 const app = express();
 const PORT = process.env.PORT || 3000;
