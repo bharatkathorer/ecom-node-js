@@ -12,7 +12,7 @@ const {socketAuth} = require("./src/middleware/authMidlleware");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const allowedOrigins = ['https://ecom-react-seven-psi.vercel.app', 'http://localhost:5173','http://localhost:3000'];
+const allowedOrigins = ['https://ecom-react-seven-psi.vercel.app', 'http://localhost:5173'];
 // app.use(cors());
 app.use(cors({
     origin: allowedOrigins, // Allows all domains (change to specific domains in production)
@@ -38,7 +38,7 @@ app.use('/', static('public'))
 // for folder Access
 
 
-const http = require('https').createServer(app);
+const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
     cors: {
         origin: allowedOrigins,
