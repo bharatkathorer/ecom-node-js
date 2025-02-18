@@ -11,13 +11,5 @@
       "src": "/(.*)",
       "dest": "index.js"
     }
-  ],
-  "static": [
-    {
-      "public": "public"
-    },
-    {
-      "public": "storage"
-    }
   ]
 }
