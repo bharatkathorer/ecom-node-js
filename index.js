@@ -38,7 +38,7 @@ app.use('/', static('public'))
 // for folder Access
 
 
-const http = require('http').createServer(app);
+const http = require('https').createServer(app);
 const io = require('socket.io')(http, {
     cors: {
         origin: allowedOrigins,
