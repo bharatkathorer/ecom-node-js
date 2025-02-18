@@ -45,6 +45,7 @@ const io = require('socket.io')(http, {
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
     },
+
     handlePreflightRequest: (req, res) => {
         res.writeHead(200, {
             "Access-Control-Allow-Origin": "*",
